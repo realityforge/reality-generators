@@ -9,6 +9,11 @@ the generators framework that generated one or more files from the model object.
 
 The framework consists of the following elements:
 
+## TemplateSets
+
+A `TemplateSet` is a named container for templates. It also declares dependencies on other `TemplateSet`
+instances and provides a description.
+
 ## Templates
 
 Templates are the basic element of the framework. They take a model object and emit one or more files
@@ -49,7 +54,4 @@ model objects are passed to the template.
 The target name is also used as the name under which the model object is bound. This is used when evaluating
 `output_filename_pattern` or `guard` as well as in templates like `erb` templates.
 
-## TemplateSets
 
-A `TemplateSet` is a named container for templates. It also declares dependencies on other `TemplateSet`
-instances and provides a description.
