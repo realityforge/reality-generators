@@ -54,4 +54,8 @@ model objects are passed to the template.
 The target name is also used as the name under which the model object is bound. This is used when evaluating
 `output_filename_pattern` or `guard` as well as in templates like `erb` templates.
 
+## Helpers
 
+A `Helper` is simply a module that is mixed into the rendering context when evaluating attributes such
+as `output_filename_pattern` or `guard` as well as in templates like `erb` templates. Helpers are a useful
+mechanism for extracting complex or duplicated code from multiple templates.
