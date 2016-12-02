@@ -12,8 +12,8 @@
 # limitations under the License.
 #
 
-require 'reality/core'
-
-require 'reality/generators/core'
-require 'reality/generators/render_context'
-require 'reality/generators/target_manager'
+module Reality #nodoc
+  module Generators #nodoc
+    Reality::Logging.configure(Generators, ::Logger::WARN)
+  end
+end
