@@ -65,7 +65,7 @@ class Reality::Generators::TestTemplate < Reality::TestCase
     options = {:guard => guard, :name => name, :extra_data => extra_data}
 
     assert_raise_message('Unexpected facets: "X"') {
-      Reality::Generators::Template.new(template_set, "X", target, template_key, helpers, options)
+      Reality::Generators::Template.new(template_set, 'X', target, template_key, helpers, options)
     }
     assert_raise_message("Unknown target 'component' for template 'someMagicKey'. Valid targets include: ") {
       Reality::Generators::Template.new(template_set, facets, target, template_key, helpers, options)
