@@ -2,7 +2,7 @@
 
 [![Build Status](https://secure.travis-ci.org/realityforge/reality-generators.png?branch=master)](http://travis-ci.org/realityforge/reality-generators)
 
-A basic toolkit for abstrcting the generation of files from model objects. These classes
+A basic toolkit for abstracting the generation of files from model objects. These classes
 were extracted from several existing toolkits, primarily [Domgen](https://github.com/realityforge/domgen).
 All of these toolkits have mechanisms for constructing model objects that were then passed to
 the generators framework that generated one or more files from the model object.

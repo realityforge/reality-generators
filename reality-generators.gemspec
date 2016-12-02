@@ -9,8 +9,8 @@ Gem::Specification.new do |s|
   s.email              = %q{peter@realityforge.org}
 
   s.homepage           = %q{https://github.com/realityforge/reality-generators}
-  s.summary            = %q{A basic toolkit for abstrcting the generation of files from model objects.}
-  s.description        = %q{A basic toolkit for abstrcting the generation of files from model objects.}
+  s.summary            = %q{A basic toolkit for abstracting the generation of files from model objects.}
+  s.description        = %q{A basic toolkit for abstracting the generation of files from model objects.}
 
   s.files              = `git ls-files`.split("\n")
   s.test_files         = `git ls-files -- {spec}/*`.split("\n")
