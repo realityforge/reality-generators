@@ -13,3 +13,4 @@
 #
 
 require 'reality/generators/render_context'
+require 'reality/generators/target_manager'

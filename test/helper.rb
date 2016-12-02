@@ -6,4 +6,8 @@ require 'reality/generators'
 
 class Reality::TestCase < Minitest::Test
   include Test::Unit::Assertions
+
+  def setup
+    Reality::Generators::TargetManager.reset_targets
+  end
 end
