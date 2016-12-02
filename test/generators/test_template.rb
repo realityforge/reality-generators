@@ -53,7 +53,7 @@ class Reality::Generators::TestTemplate < Reality::TestCase
   end
 
   def test_template
-    template_set = Reality::Generators::TemplateSet.new('foo')
+    template_set = Reality::Generators::TemplateSet.new(TestTemplateSetContainer, 'foo')
 
     facets = [:jpa, :ee]
     target = :component
@@ -105,14 +105,14 @@ class Reality::Generators::TestTemplate < Reality::TestCase
     # ComplexModel not processed as guard protects against it
     assert_equal 3, unprocessed_files1.size
 
-    TestTemplate.new(template_set, facets, target, template_key, helpers, options).
+    TestTemplate.new(template_set, facets, target, template_key + '1', helpers, {}).
       generate('Ignored', SimpleModel.new, unprocessed_files1)
     assert_equal 0, unprocessed_files1.size
 
-    assert_equal true, Reality::Generators::Template.new(template_set, [], target, template_key, helpers, options).applicable?(SimpleModel.new)
-    assert_equal true, Reality::Generators::Template.new(template_set, facets, target, template_key, helpers, options).applicable?(SimpleModel.new)
-    assert_equal false, Reality::Generators::Template.new(template_set, facets, target, template_key, helpers, options).applicable?(SimpleModel2.new)
-    assert_equal false, Reality::Generators::Template.new(template_set, facets, target, template_key, helpers, options).applicable?(ComplexModel.new)
+    assert_equal true, Reality::Generators::Template.new(template_set, [], target, template_key + '2', helpers, {}).applicable?(SimpleModel.new)
+    assert_equal true, Reality::Generators::Template.new(template_set, facets, target, template_key + '3', helpers, {}).applicable?(SimpleModel.new)
+    assert_equal false, Reality::Generators::Template.new(template_set, facets, target, template_key + '4', helpers, {}).applicable?(SimpleModel2.new)
+    assert_equal false, Reality::Generators::Template.new(template_set, facets, target, template_key + '5', helpers, {}).applicable?(ComplexModel.new)
   end
 
   class StringTemplate < Reality::Generators::SingleFileOutputTemplate
@@ -122,7 +122,7 @@ class Reality::Generators::TestTemplate < Reality::TestCase
   end
 
   def test_single_file_template
-    template_set = Reality::Generators::TemplateSet.new('foo')
+    template_set = Reality::Generators::TemplateSet.new(TestTemplateSetContainer, 'foo')
 
     output_filename_pattern = 'main/java/#{component.name}.java'
     template_key = 'MyFiles/templates/foo.erb.java'

@@ -7,7 +7,22 @@ require 'reality/generators'
 class Reality::TestCase < Minitest::Test
   include Test::Unit::Assertions
 
+  module TestTemplateSetContainer
+    class << self
+      include Reality::Generators::TemplateSetContainer
+
+      def new_template_set(name, options, &block)
+        Reality::Generators::TemplateSet.new(self, name, options, &block)
+      end
+
+      def reset
+        template_set_map.clear
+      end
+    end
+  end
+
   def setup
+    TestTemplateSetContainer.reset
     Reality::Generators::TargetManager.reset_targets
     @temp_dir = nil
   end

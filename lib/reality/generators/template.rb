@@ -46,6 +46,7 @@ module Reality #nodoc
         @guard = options[:guard]
         @name = options[:name] if options[:name]
         @extra_data = options[:extra_data] || {}
+        template_set.send(:register_template, self)
       end
 
       def to_s

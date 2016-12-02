@@ -13,7 +13,7 @@ class Reality::Generators::TestErbTemplate < Reality::TestCase
   end
 
   def test_erb_template
-    template_set = Reality::Generators::TemplateSet.new('foo')
+    template_set = Reality::Generators::TemplateSet.new(TestTemplateSetContainer, 'foo')
 
     output_filename_pattern = 'main/java/#{component.name}.java'
     template_filename = File.expand_path(File.dirname(__FILE__) + '/templates/mytemplate.java.erb')
