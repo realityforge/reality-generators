@@ -17,13 +17,13 @@ class Reality::TestCase < Minitest::Test
 
       def reset
         template_set_map.clear
+        target_manager.reset_targets
       end
     end
   end
 
   def setup
     TestTemplateSetContainer.reset
-    Reality::Generators::TargetManager.reset_targets
     @temp_dir = nil
   end
 

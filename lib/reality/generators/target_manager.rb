@@ -17,20 +17,22 @@ module Reality #nodoc
 
     # A descriptor describing a type in the system that a template can be generated from.
     class Target
-      def initialize(key, container_key, options)
+      def initialize(target_manager, key, container_key, options)
+        @target_manager = target_manager
         @key = key.to_sym
         @facet_key = options[:facet_key]
         @qualified_key = (@facet_key.nil? ? @key : "#{@facet_key}.#{@key}").to_sym
         @access_method = options[:access_method] || Reality::Naming.pluralize(@key)
         @container_key = container_key.nil? ? nil : container_key.to_sym
 
-        if @container_key && !TargetManager.target_by_key?(@container_key)
+        if @container_key && !target_manager.target_by_key?(@container_key)
           raise "Target '#{key}' defines container as '#{@container_key}' but no such target exists."
         end
 
-        TargetManager.send(:register_target, self)
+        @target_manager.send(:register_target, self)
       end
 
+      attr_reader :target_manager
       attr_reader :qualified_key
       attr_reader :key
       attr_reader :container_key
@@ -43,51 +45,55 @@ module Reality #nodoc
     end
 
     class TargetManager
-      class << self
-        def is_target_valid?(key)
-          target_map.keys.include?(key)
-        end
+      attr_reader :container
 
-        def target_keys
-          target_map.keys
-        end
+      def initialize(container)
+        @container = container
+      end
 
-        def targets
-          target_map.values
-        end
+      def is_target_valid?(key)
+        target_map.keys.include?(key)
+      end
 
-        def target_by_key?(key)
-          !!target_map[key]
-        end
+      def target_keys
+        target_map.keys
+      end
 
-        def target_by_key(key)
-          target = target_map[key.to_sym]
-          raise "Can not find target with key '#{key}'" unless target
-          target
-        end
+      def targets
+        target_map.values
+      end
 
-        def target(key, container_key = nil, options = {})
-          Target.new(key, container_key, options)
-        end
+      def target_by_key?(key)
+        !!target_map[key]
+      end
 
-        def targets_by_container(container_key)
-          target_map.values.select { |target| target.container_key == container_key }
-        end
+      def target_by_key(key)
+        target = target_map[key.to_sym]
+        raise "Can not find target with key '#{key}'" unless target
+        target
+      end
 
-        def reset_targets
-          target_map.clear
-        end
+      def target(key, container_key = nil, options = {})
+        Target.new(self, key, container_key, options)
+      end
 
-        private
+      def targets_by_container(container_key)
+        target_map.values.select { |target| target.container_key == container_key }
+      end
 
-        def register_target(target)
-          raise "Attempting to redefine target #{target.qualified_key}" if target_map[target.qualified_key]
-          target_map[target.qualified_key] = target
-        end
+      def reset_targets
+        target_map.clear
+      end
 
-        def target_map
-          @target_map ||= {}
-        end
+      private
+
+      def register_target(target)
+        raise "Attempting to redefine target #{target.qualified_key}" if target_map[target.qualified_key]
+        target_map[target.qualified_key] = target
+      end
+
+      def target_map
+        @target_map ||= {}
       end
     end
   end

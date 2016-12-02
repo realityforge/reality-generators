@@ -71,7 +71,7 @@ class Reality::Generators::TestTemplate < Reality::TestCase
       Reality::Generators::Template.new(template_set, facets, target, template_key, helpers, options)
     }
 
-    Reality::Generators::TargetManager.target(target)
+    TestTemplateSetContainer.target_manager.target(target)
 
     template1 = Reality::Generators::Template.new(template_set, facets, target, template_key, helpers, options)
 
@@ -126,7 +126,7 @@ class Reality::Generators::TestTemplate < Reality::TestCase
 
     output_filename_pattern = 'main/java/#{component.name}.java'
     template_key = 'MyFiles/templates/foo.erb.java'
-    Reality::Generators::TargetManager.target(:component)
+    TestTemplateSetContainer.target_manager.target(:component)
 
     template1 = StringTemplate.new(template_set, [], :component, template_key, output_filename_pattern, [], {})
 

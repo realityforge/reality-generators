@@ -37,7 +37,7 @@ module Reality #nodoc
 
       def initialize(template_set, facets, target, template_key, helpers, options = {})
         Generators.error("Unexpected facets: #{facets.inspect}") unless facets.is_a?(Array) && facets.all? { |a| a.is_a?(Symbol) }
-        Generators.error("Unknown target '#{target}' for template '#{template_key}'. Valid targets include: #{TargetManager.target_keys.join(', ')}") unless TargetManager.is_target_valid?(target)
+        Generators.error("Unknown target '#{target}' for template '#{template_key}'. Valid targets include: #{template_set.container.target_manager.target_keys.join(', ')}") unless template_set.container.target_manager.is_target_valid?(target)
         @template_set = template_set
         @facets = facets
         @target = target

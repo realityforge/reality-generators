@@ -40,6 +40,10 @@ module Reality #nodoc
         template_set
       end
 
+      def target_manager
+        @target_manager ||= Reality::Generators::TargetManager.new(self)
+      end
+
       protected
 
       def register_template_set(template_set)

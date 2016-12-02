@@ -2,7 +2,7 @@ require File.expand_path('../../helper', __FILE__)
 
 class Reality::Generators::TestTemplateSet < Reality::TestCase
   def test_template_set
-    Reality::Generators::TargetManager.target(:component)
+    TestTemplateSetContainer.target_manager.target(:component)
 
     assert_raise_message("TemplateSet 'iris_entity' defined requirement on template set 'iris_shared' that does not exist.") {
       Reality::Generators::TemplateSet.new(TestTemplateSetContainer,
