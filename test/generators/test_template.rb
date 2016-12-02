@@ -1,6 +1,6 @@
 require File.expand_path('../../helper', __FILE__)
 
-class Reality::Generators::TestTargetManager < Reality::TestCase
+class Reality::Generators::TestTemplate < Reality::TestCase
   module MyHelper
     def a
       'A'
