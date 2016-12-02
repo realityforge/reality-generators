@@ -13,7 +13,9 @@
 #
 
 require 'reality/core'
+require 'reality/naming'
 
 require 'reality/generators/core'
 require 'reality/generators/render_context'
 require 'reality/generators/target_manager'
+require 'reality/generators/template'
