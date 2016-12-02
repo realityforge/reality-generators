@@ -16,6 +16,11 @@ module Reality #nodoc
   module Generators #nodoc
 
     class ErbTemplate < Reality::Generators::SingleFileOutputTemplate
+      def initialize(template_set, facets, target, template_key, output_filename_pattern, helpers, options = {})
+        super(template_set, facets, target, template_key, output_filename_pattern, helpers, options)
+        @template = nil
+      end
+
       def template_filename
         template_key
       end
