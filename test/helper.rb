@@ -37,7 +37,7 @@ class Reality::TestCase < Minitest::Test
   def temp_dir
     if @temp_dir.nil?
       base_temp_dir = ENV['TEST_TMP_DIR'] || File.expand_path("#{File.dirname(__FILE__)}/../tmp")
-      @temp_dir = "#{base_temp_dir}/generators-#{Time.now.to_i}"
+      @temp_dir = "#{base_temp_dir}/tests/generators-#{Time.now.to_i}"
       FileUtils.mkdir_p @temp_dir
     end
     @temp_dir
