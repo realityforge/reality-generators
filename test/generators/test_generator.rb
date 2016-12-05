@@ -238,4 +238,43 @@ class Reality::Generators::TestGenerator < Reality::TestCase
     assert_equal false, File.exist?("#{target_directory}/main/java/MyRepo/MyEntityB/MyAttr3.java")
     assert_equal false, File.exist?("#{target_directory}/main/java/MyRepo/MyEntityB/MyAttr4.java")
   end
+
+  def test_load_templates_from_template_sets
+
+    TestTemplateSetContainer.target_manager.target(:repository)
+    TestTemplateSetContainer.target_manager.target(:entity, :repository)
+    TestTemplateSetContainer.target_manager.target(:attribute, :entity)
+    TestTemplateSetContainer.target_manager.target(:unit, :repository, :facet_key => :jpa)
+
+    TestTemplateSetContainer.template_set(:template_set_1) do |template_set|
+      RepositoryTemplate.new(template_set, [], :repository, 'repository1.java', 'main/java/#{repository.name}1.java')
+
+      EntityTemplate.new(template_set, [], :entity, 'entity.java', 'main/java/#{entity.qualified_name.gsub(".","/")}.java', [], :guard => 'entity.qualified_name == "MyRepo.MyEntityB"')
+      AttributeTemplate.new(template_set, [], :attribute, 'attribute.java', 'main/java/#{attribute.qualified_name.gsub(".","/")}.java')
+      UnitTemplate.new(template_set, [], :'jpa.unit', 'unit.java', 'main/java/units/#{unit.name.gsub(".","/")}.java', [], {})
+    end
+
+    TestTemplateSetContainer.template_set(:template_set_2) do |template_set|
+      RepositoryTemplate.new(template_set, [], :repository, 'repository2.java', 'main/java/#{repository.name}2.java')
+    end
+
+    TestTemplateSetContainer.template_set(:template_set_3) do |template_set|
+      RepositoryTemplate.new(template_set, [], :repository, 'repository3.java', 'main/java/#{repository.name}3.java')
+    end
+
+    TestTemplateSetContainer.template_set(:template_set_4) do |template_set|
+      RepositoryTemplate.new(template_set, [], :repository, 'repository4.java', 'main/java/#{repository.name}3.java')
+
+      AttributeTemplate.new(template_set, [], :attribute, 'attribute4.java', 'main/java/#{attribute.qualified_name.gsub(".","/")}4.java')
+    end
+
+    template_set_keys = [:template_set_1, :template_set_4]
+    templates = Reality::Generators::Generator.
+      load_templates_from_template_sets(TestTemplateSetContainer, template_set_keys)
+
+    assert_equal 6, templates.size
+    assert_equal %w(template_set_1:attribute.java template_set_1:entity.java template_set_1:repository1.java template_set_1:unit.java template_set_4:attribute4.java template_set_4:repository4.java),
+                 templates.collect{|t| t.name}.sort
+
+  end
 end
