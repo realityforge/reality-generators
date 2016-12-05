@@ -112,7 +112,7 @@ module Reality #nodoc
     class SingleFileOutputTemplate < Template
       attr_reader :output_filename_pattern
 
-      def initialize(template_set, facets, target, template_key, output_filename_pattern, helpers, options = {})
+      def initialize(template_set, facets, target, template_key, output_filename_pattern, helpers = [], options = {})
         super(template_set, facets, target, template_key, helpers, options)
         @output_filename_pattern = output_filename_pattern
       end
