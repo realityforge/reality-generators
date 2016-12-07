@@ -90,7 +90,7 @@ class Reality::Generators::TestGenerator < Reality::TestCase
     TestTemplateSetContainer.target_manager.target(:unit, :repository, :facet_key => :jpa)
 
     targets = {}
-    Reality::Generators::Generator.send(:collect_generation_targets, TestTemplateSetContainer, :repository, repository, repository, targets)
+    TestTemplateSetContainer.generator.send(:collect_generation_targets, TestTemplateSetContainer, :repository, repository, repository, targets)
 
     assert_equal true, targets.include?(:repository)
     assert_equal true, targets.include?(:entity)
@@ -119,7 +119,7 @@ class Reality::Generators::TestGenerator < Reality::TestCase
     repository.enable_jpa!
 
     targets = {}
-    Reality::Generators::Generator.send(:collect_generation_targets, TestTemplateSetContainer, :repository, repository, repository, targets)
+    TestTemplateSetContainer.generator.send(:collect_generation_targets, TestTemplateSetContainer, :repository, repository, repository, targets)
 
     # No units have been defined so no extra targets
     assert_equal 3, targets.size
@@ -128,7 +128,7 @@ class Reality::Generators::TestGenerator < Reality::TestCase
     repository.jpa.unit(:MyUnit2)
 
     targets = {}
-    Reality::Generators::Generator.send(:collect_generation_targets, TestTemplateSetContainer, :repository, repository, repository, targets)
+    TestTemplateSetContainer.generator.send(:collect_generation_targets, TestTemplateSetContainer, :repository, repository, repository, targets)
 
     assert_equal true, targets.include?(:repository)
     assert_equal true, targets.include?(:entity)
@@ -210,7 +210,7 @@ class Reality::Generators::TestGenerator < Reality::TestCase
     original_mtime = File.mtime(repo_file)
 
     filter = Proc.new { |artifact_type, artifact| artifact_type != :attribute || %w(MyAttr1 MyAttr2).include?(artifact.name.to_s) }
-    Reality::Generators::Generator.
+    TestTemplateSetContainer.generator.
       generate(TestTemplateSetContainer, :repository, repository, target_directory, template_set.templates, filter)
 
     assert_equal false, File.directory?("#{target_directory}/some")
@@ -269,7 +269,7 @@ class Reality::Generators::TestGenerator < Reality::TestCase
     end
 
     template_set_keys = [:template_set_1, :template_set_4]
-    templates = Reality::Generators::Generator.
+    templates = TestTemplateSetContainer.generator.
       load_templates_from_template_sets(TestTemplateSetContainer, template_set_keys)
 
     assert_equal 6, templates.size

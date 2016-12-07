@@ -7,12 +7,22 @@ require 'reality/generators'
 class Reality::TestCase < Minitest::Test
   include Test::Unit::Assertions
 
+  module TestGenerator
+    class << self
+      include Reality::Generators::Generator
+    end
+  end
+
   module TestTemplateSetContainer
     class << self
       include Reality::Generators::TemplateSetContainer
 
       def new_template_set(name, options, &block)
         Reality::Generators::TemplateSet.new(self, name, options, &block)
+      end
+
+      def new_generator
+        TestGenerator
       end
 
       def reset

@@ -44,6 +44,10 @@ module Reality #nodoc
         @target_manager ||= Reality::Generators::TargetManager.new(self)
       end
 
+      def generator
+        @generator ||= new_generator
+      end
+
       protected
 
       def register_template_set(template_set)
@@ -53,6 +57,10 @@ module Reality #nodoc
 
       def new_template_set(name, options, &block)
         Generators.error('new_template_set not implemented')
+      end
+
+      def new_generator
+        Generators.error('new_generator not implemented')
       end
 
       private
