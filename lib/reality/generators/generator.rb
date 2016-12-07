@@ -99,6 +99,7 @@ module Reality #nodoc
           (targets[element_type] ||= []) << [scope_element, element]
 
           template_set_container.target_manager.targets_by_container(element_type).each do |target|
+            next unless handle_subelement?(element, target.key)
             subelements = nil
             subscope = nil
             if target.standard?
@@ -115,6 +116,12 @@ module Reality #nodoc
               collect_generation_targets(template_set_container, target.qualified_key, subscope || subelement, subelement, targets)
             end
           end
+        end
+
+        # A hook to control whether certain paths in model should
+        # be follow when collecting generation targets
+        def handle_subelement?(object, sub_feature_key)
+          true
         end
       end
     end
