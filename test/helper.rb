@@ -18,10 +18,6 @@ class Reality::TestCase < Minitest::Test
     class << self
       include Reality::Generators::TemplateSetContainer
 
-      def new_template_set(name, options, &block)
-        Reality::Generators::TemplateSet.new(self, name, options, &block)
-      end
-
       def new_generator
         TestGenerator
       end

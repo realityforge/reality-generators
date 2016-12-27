@@ -27,5 +27,6 @@ require 'reality/generators/erb_template'
 require 'reality/generators/template_set'
 require 'reality/generators/template_set_container'
 require 'reality/generators/generator'
+require 'reality/generators/standard_template_set'
 
 require 'reality/generators/buildr_integration'
