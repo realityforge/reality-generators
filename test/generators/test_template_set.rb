@@ -39,7 +39,7 @@ class Reality::Generators::TestTemplateSet < Reality::TestCase
     assert_equal true, template_set2.template_by_name?(template.name)
     assert_equal template, template_set2.template_by_name(template.name)
 
-    assert_generator_error('Template already exists with specified name iris_entity:templates/mytemplate.java.erb') do
+    assert_generator_error('Template already exists with specified name iris_entity:mytemplate.java') do
       Reality::Generators::ErbTemplate.new(template_set2,
                                            [],
                                            :component,

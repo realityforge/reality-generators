@@ -71,7 +71,7 @@ module Reality #nodoc
       end
 
       def name
-        @name ||= "#{self.template_set.name}:#{self.template_key.gsub(/.*\/templates\/(.*)\.#{template_extension}$/, '\1')}"
+        @name ||= "#{self.template_set.name}:#{self.template_key.gsub(/^(.*\/)?templates\/(.*)\.#{template_extension}$/, '\2')}"
       end
 
       protected

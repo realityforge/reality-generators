@@ -16,7 +16,7 @@ class Reality::Generators::TestRubyTemplate < Reality::TestCase
     template_set = Reality::Generators::TemplateSet.new(TestTemplateSetContainer, 'foo')
 
     output_filename_pattern = 'main/java/#{component.name}.java'
-    template_filename = File.expand_path(File.dirname(__FILE__) + '/templates/rubytemplate.rb')
+    template_filename = File.expand_path(File.dirname(__FILE__) + '/templates/rubytemplate.java.rb')
     TestTemplateSetContainer.target_manager.target(:component)
 
     template1 = Reality::Generators::RubyTemplate.new(template_set, [], :component, template_filename, output_filename_pattern, [], {})
@@ -30,7 +30,7 @@ class Reality::Generators::TestRubyTemplate < Reality::TestCase
     assert_equal template_filename, template1.template_key
     assert_equal nil, template1.guard
     assert_equal({}, template1.extra_data)
-    assert_equal 'foo:rubytemplate', template1.name
+    assert_equal 'foo:rubytemplate.java', template1.name
 
     target_basedir = "#{temp_dir}/generated/ruby_template"
     target_filename = "#{target_basedir}/main/java/SimpleModel.java"

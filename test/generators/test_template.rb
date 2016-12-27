@@ -116,6 +116,10 @@ class Reality::Generators::TestTemplate < Reality::TestCase
   end
 
   class StringTemplate < Reality::Generators::SingleFileOutputTemplate
+    def template_extension
+      'erb'
+    end
+
     def render_to_string(context_binding)
       'X'
     end
@@ -125,7 +129,7 @@ class Reality::Generators::TestTemplate < Reality::TestCase
     template_set = Reality::Generators::TemplateSet.new(TestTemplateSetContainer, 'foo')
 
     output_filename_pattern = 'main/java/#{component.name}.java'
-    template_key = 'MyFiles/templates/foo.erb.java'
+    template_key = 'MyFiles/templates/foo.java.erb'
     TestTemplateSetContainer.target_manager.target(:component)
 
     template1 = StringTemplate.new(template_set, [], :component, template_key, output_filename_pattern, [], {})
@@ -139,7 +143,7 @@ class Reality::Generators::TestTemplate < Reality::TestCase
     assert_equal template_key, template1.template_key
     assert_equal nil, template1.guard
     assert_equal({}, template1.extra_data)
-    assert_equal 'foo:MyFiles/templates/foo.erb.java', template1.name
+    assert_equal 'foo:foo.java', template1.name
 
     target_basedir = "#{temp_dir}/generated/single_file_template"
     target_filename = "#{target_basedir}/main/java/SimpleModel.java"
