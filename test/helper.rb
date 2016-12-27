@@ -6,6 +6,7 @@ require 'reality/generators'
 
 class Reality::TestCase < Minitest::Test
   include Test::Unit::Assertions
+  include Reality::Logging::Assertions
 
   module TestGenerator
     class << self
@@ -51,5 +52,11 @@ class Reality::TestCase < Minitest::Test
       FileUtils.mkdir_p @temp_dir
     end
     @temp_dir
+  end
+
+  def assert_generator_error(expected_message, &block)
+    assert_logging_error(Reality::Generators, expected_message) do
+      yield block
+    end
   end
 end

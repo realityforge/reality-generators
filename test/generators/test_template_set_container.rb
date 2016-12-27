@@ -4,13 +4,13 @@ class Reality::Generators::TestTemplateSetContainer < Reality::TestCase
   def test_template_set_container
     assert_equal 0, TestTemplateSetContainer.template_sets.size
     assert_equal false, TestTemplateSetContainer.template_set_by_name?(:foo)
-    assert_raise_message('Unable to locate template_set foo') { TestTemplateSetContainer.template_set_by_name(:foo) }
+    assert_generator_error('Unable to locate template_set foo') { TestTemplateSetContainer.template_set_by_name(:foo) }
 
-    assert_raise_message("TemplateSet 'iris_entity' defined requirement on template set 'iris_shared' that does not exist.") {
+    assert_generator_error("TemplateSet 'iris_entity' defined requirement on template set 'iris_shared' that does not exist.") do
       Reality::Generators::TemplateSet.new(TestTemplateSetContainer,
                                            :iris_entity,
                                            :required_template_sets => [:iris_shared])
-    }
+    end
 
     template_set1 = TestTemplateSetContainer.template_set(:foo)
 

@@ -26,7 +26,7 @@ module Reality #nodoc
         @container_key = container_key.nil? ? nil : container_key.to_sym
 
         if @container_key && !target_manager.target_by_key?(@container_key)
-          raise "Target '#{key}' defines container as '#{@container_key}' but no such target exists."
+          Reality::Generators.error("Target '#{key}' defines container as '#{@container_key}' but no such target exists.")
         end
 
         @target_manager.send(:register_target, self)
@@ -69,7 +69,7 @@ module Reality #nodoc
 
       def target_by_key(key)
         target = target_map[key.to_sym]
-        raise "Can not find target with key '#{key}'" unless target
+        Reality::Generators.error("Can not find target with key '#{key}'") unless target
         target
       end
 
@@ -88,7 +88,7 @@ module Reality #nodoc
       private
 
       def register_target(target)
-        raise "Attempting to redefine target #{target.qualified_key}" if target_map[target.qualified_key]
+        Reality::Generators.error("Attempting to redefine target #{target.qualified_key}") if target_map[target.qualified_key]
         target_map[target.qualified_key] = target
       end
 

@@ -51,12 +51,12 @@ module Reality #nodoc
       protected
 
       def register_template_set(template_set)
-        raise "Attempting to redefine template_set #{template_set.name}" if template_set_map[template_set.name.to_s]
+        Reality::Generators.error("Attempting to redefine template_set #{template_set.name}") if template_set_map[template_set.name.to_s]
         template_set_map[template_set.name.to_s] = template_set
       end
 
       def new_template_set(name, options, &block)
-        Generators.error('new_template_set not implemented')
+        Reality::Generators::StandardTemplateSet.new(self, name.to_s, options, &block)
       end
 
       def new_generator

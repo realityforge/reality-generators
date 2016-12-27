@@ -4,11 +4,11 @@ class Reality::Generators::TestTemplateSet < Reality::TestCase
   def test_template_set
     TestTemplateSetContainer.target_manager.target(:component)
 
-    assert_raise_message("TemplateSet 'iris_entity' defined requirement on template set 'iris_shared' that does not exist.") {
+    assert_generator_error("TemplateSet 'iris_entity' defined requirement on template set 'iris_shared' that does not exist.") do
       Reality::Generators::TemplateSet.new(TestTemplateSetContainer,
                                            :iris_entity,
                                            :required_template_sets => [:iris_shared])
-    }
+    end
 
     template_set1 = Reality::Generators::TemplateSet.new(TestTemplateSetContainer, :iris_shared)
 
@@ -39,7 +39,7 @@ class Reality::Generators::TestTemplateSet < Reality::TestCase
     assert_equal true, template_set2.template_by_name?(template.name)
     assert_equal template, template_set2.template_by_name(template.name)
 
-    assert_raise_message('Template already exists with specified name iris_entity:templates/mytemplate.java.erb') {
+    assert_generator_error('Template already exists with specified name iris_entity:templates/mytemplate.java.erb') do
       Reality::Generators::ErbTemplate.new(template_set2,
                                            [],
                                            :component,
@@ -47,7 +47,6 @@ class Reality::Generators::TestTemplateSet < Reality::TestCase
                                            'src/main/#{component.name}',
                                            [],
                                            {})
-    }
-
+    end
   end
 end

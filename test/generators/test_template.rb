@@ -64,12 +64,12 @@ class Reality::Generators::TestTemplate < Reality::TestCase
     name = 'Foo'
     options = {:guard => guard, :name => name, :extra_data => extra_data}
 
-    assert_raise_message('Unexpected facets: "X"') {
+    assert_generator_error('Unexpected facets: "X"') do
       Reality::Generators::Template.new(template_set, 'X', target, template_key, helpers, options)
-    }
-    assert_raise_message("Unknown target 'component' for template 'someMagicKey'. Valid targets include: ") {
+    end
+    assert_generator_error("Unknown target 'component' for template 'someMagicKey'. Valid targets include: ") do
       Reality::Generators::Template.new(template_set, facets, target, template_key, helpers, options)
-    }
+    end
 
     TestTemplateSetContainer.target_manager.target(target)
 
@@ -85,7 +85,7 @@ class Reality::Generators::TestTemplate < Reality::TestCase
     assert_equal name, template1.name
     assert_equal name, template1.to_s
 
-    assert_raise_message('output_path unimplemented') { template1.output_path }
+    assert_generator_error('output_path unimplemented') { template1.output_path }
 
     render_context = template1.send(:create_context, 'SomeValue')
 

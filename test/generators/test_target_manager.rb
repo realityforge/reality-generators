@@ -49,9 +49,9 @@ class Reality::Generators::TestTargetManager < Reality::TestCase
     assert_equal nil, target1.facet_key
     assert_equal true, target1.standard?
 
-    assert_raise_message('Attempting to redefine target project') { Reality::Generators::Target.new(target_manager, :project, nil, {}) }
+    assert_generator_error('Attempting to redefine target project') { Reality::Generators::Target.new(target_manager, :project, nil, {}) }
 
-    assert_raise_message("Target 'foo' defines container as 'bar' but no such target exists.") { Reality::Generators::Target.new(target_manager, :foo, :bar, {}) }
+    assert_generator_error("Target 'foo' defines container as 'bar' but no such target exists.") { Reality::Generators::Target.new(target_manager, :foo, :bar, {}) }
   end
 
   def test_target_manager_basic_operation
@@ -84,6 +84,6 @@ class Reality::Generators::TestTargetManager < Reality::TestCase
     assert_equal 1, target_manager.targets_by_container(:project).size
     assert_equal :component, target_manager.targets_by_container(:project)[0].key
 
-    assert_raise_message("Can not find target with key 'foo'") { target_manager.target_by_key(:foo) }
+    assert_generator_error("Can not find target with key 'foo'") { target_manager.target_by_key(:foo) }
   end
 end

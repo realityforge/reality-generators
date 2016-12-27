@@ -29,7 +29,7 @@ module Reality #nodoc
         super(options, &block)
         self.required_template_sets.each do |template_set_name|
           unless container.template_set_by_name?(template_set_name)
-            raise "TemplateSet '#{self.name}' defined requirement on template set '#{template_set_name}' that does not exist."
+            Reality::Generators.error("TemplateSet '#{self.name}' defined requirement on template set '#{template_set_name}' that does not exist.")
           end
         end
         container.send(:register_template_set, self)
