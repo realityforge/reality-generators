@@ -59,11 +59,11 @@ class Reality::Generators::TestGenerator < Reality::TestCase
     end
 
     def facet_enabled?(facet)
-      facet == :jpa ? !!@jpa : false
+      facet == :jpa ? !!self.jpa : false
     end
 
     def jpa
-      @jpa
+      @jpa ||= nil
     end
 
     def enable_jpa!
