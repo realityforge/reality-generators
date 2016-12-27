@@ -189,12 +189,12 @@ class Reality::Generators::TestGenerator < Reality::TestCase
     TestTemplateSetContainer.target_manager.target(:attribute, :entity)
     TestTemplateSetContainer.target_manager.target(:unit, :repository, :facet_key => :jpa)
 
-    template_set = TestTemplateSetContainer.template_set(:test) do |template_set|
-      RepositoryTemplate.new(template_set, [], :repository, 'repository.java', 'main/java/#{repository.name}.java')
+    template_set = TestTemplateSetContainer.template_set(:test) do |t|
+      RepositoryTemplate.new(t, [], :repository, 'repository.java', 'main/java/#{repository.name}.java')
 
-      EntityTemplate.new(template_set, [], :entity, 'entity.java', 'main/java/#{entity.qualified_name.gsub(".","/")}.java', [], :guard => 'entity.qualified_name == "MyRepo.MyEntityB"')
-      AttributeTemplate.new(template_set, [], :attribute, 'attribute.java', 'main/java/#{attribute.qualified_name.gsub(".","/")}.java')
-      UnitTemplate.new(template_set, [], :'jpa.unit', 'unit.java', 'main/java/units/#{unit.name.gsub(".","/")}.java', [], {})
+      EntityTemplate.new(t, [], :entity, 'entity.java', 'main/java/#{entity.qualified_name.gsub(".","/")}.java', [], :guard => 'entity.qualified_name == "MyRepo.MyEntityB"')
+      AttributeTemplate.new(t, [], :attribute, 'attribute.java', 'main/java/#{attribute.qualified_name.gsub(".","/")}.java')
+      UnitTemplate.new(t, [], :'jpa.unit', 'unit.java', 'main/java/units/#{unit.name.gsub(".","/")}.java', [], {})
     end
 
     target_directory = "#{temp_dir}/generated/erb_template"
