@@ -8,19 +8,9 @@ class Reality::TestCase < Minitest::Test
   include Test::Unit::Assertions
   include Reality::Logging::Assertions
 
-  module TestGenerator
-    class << self
-      include Reality::Generators::Generator
-    end
-  end
-
   module TestTemplateSetContainer
     class << self
       include Reality::Generators::TemplateSetContainer
-
-      def new_generator
-        TestGenerator
-      end
 
       def reset
         template_set_map.clear

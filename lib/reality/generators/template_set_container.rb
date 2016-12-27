@@ -45,7 +45,13 @@ module Reality #nodoc
       end
 
       def generator
-        @generator ||= new_generator
+        @generator ||= Reality::Generators::Generator.new(self)
+      end
+
+      # A hook to control whether certain paths in model should
+      # be follow when collecting generation targets
+      def handle_subelement?(object, sub_feature_key)
+        true
       end
 
       protected

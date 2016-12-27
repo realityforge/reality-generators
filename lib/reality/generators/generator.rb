@@ -14,11 +14,18 @@
 
 module Reality #nodoc
   module Generators #nodoc
-    module Generator
+    class Generator
+
+      def initialize(template_set_container)
+        @template_set_container = template_set_container
+      end
+
+      attr_reader :template_set_container
+
       # Return a list of templates loaded from specified template_set_keys
-      def load_templates_from_template_sets(template_set_container, template_set_keys)
+      def load_templates_from_template_sets(template_set_keys)
         template_map = {}
-        load_templates(template_set_container, template_map, template_set_keys, [])
+        load_templates(template_map, template_set_keys, [])
         template_map.values
       end
 
@@ -29,13 +36,13 @@ module Reality #nodoc
       # The traversal starts from a root element of specified element_type and
       # traverses all elements that are contained transitively by the root element.
       # The templates then generate files from traversed elements.
-      def generate(template_set_container, element_type, element, directory, templates, filter)
+      def generate(element_type, element, directory, templates, filter)
         unprocessed_files = (Dir["#{directory}/**/*.*"] + Dir["#{directory}/**/*"]).uniq
 
         Generators.debug "Templates to process: #{templates.collect { |t| t.name }.inspect}"
 
         targets = {}
-        collect_generation_targets(template_set_container, element_type, element, element, targets)
+        collect_generation_targets(element_type, element, element, targets)
 
         templates.each do |template|
           Generators.debug "Evaluating template: #{template.name}"
@@ -66,12 +73,12 @@ module Reality #nodoc
 
       private
 
-      def load_templates(template_set_container, template_map, template_set_keys, processed_template_sets)
+      def load_templates(template_map, template_set_keys, processed_template_sets)
         template_set_keys.each do |template_set_key|
           next if processed_template_sets.include?(template_set_key)
-          template_set = template_set_container.template_set_by_name(template_set_key)
+          template_set = self.template_set_container.template_set_by_name(template_set_key)
           processed_template_sets << template_set_key
-          load_templates(template_set_container, template_map, template_set.required_template_sets, processed_template_sets)
+          load_templates(template_map, template_set.required_template_sets, processed_template_sets)
           template_set.templates.each do |template|
             template_map[template.name] = template
           end
@@ -92,11 +99,11 @@ module Reality #nodoc
       #   ...
       # }
       #
-      def collect_generation_targets(template_set_container, element_type, scope_element, element, targets)
+      def collect_generation_targets(element_type, scope_element, element, targets)
         (targets[element_type] ||= []) << [scope_element, element]
 
-        template_set_container.target_manager.targets_by_container(element_type).each do |target|
-          next unless handle_subelement?(element, target.key)
+        self.template_set_container.target_manager.targets_by_container(element_type).each do |target|
+          next unless self.template_set_container.handle_subelement?(element, target.key)
           subelements = nil
           subscope = nil
           if target.standard?
@@ -110,15 +117,9 @@ module Reality #nodoc
           subelements = [subelements] unless subelements.is_a?(Array)
 
           subelements.each do |subelement|
-            collect_generation_targets(template_set_container, target.qualified_key, subscope || subelement, subelement, targets)
+            collect_generation_targets(target.qualified_key, subscope || subelement, subelement, targets)
           end
         end
-      end
-
-      # A hook to control whether certain paths in model should
-      # be follow when collecting generation targets
-      def handle_subelement?(object, sub_feature_key)
-        true
       end
     end
   end
