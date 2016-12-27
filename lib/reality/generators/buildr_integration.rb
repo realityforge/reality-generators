@@ -14,7 +14,7 @@
 
 module Reality #nodoc
   module Generators #nodoc
-    module Generator
+    module Buildr
       # This method is called from a Rake or Buildr task to configure the Buildr
       # project so that it knows the location of all the generated artifacts and
       # adds them to the appropriate compile paths etc.
