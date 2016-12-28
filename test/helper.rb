@@ -12,7 +12,18 @@ class Reality::TestCase < Minitest::Test
     class << self
       include Reality::Generators::TemplateSetContainer
 
+      def derive_default_helpers(options)
+        helpers
+      end
+
+      attr_writer :helpers
+
+      def helpers
+        @helpers ||= []
+      end
+
       def reset
+        helpers.clear
         template_set_map.clear
         target_manager.reset_targets
       end

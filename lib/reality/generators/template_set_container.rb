@@ -54,6 +54,13 @@ module Reality #nodoc
         true
       end
 
+      # Hook for deriving the default set of helpers when defining
+      # templates using the artifact DSL. Typically this is overridden
+      # in framework specific template set containers
+      def derive_default_helpers(options)
+        []
+      end
+
       protected
 
       def register_template_set(template_set)

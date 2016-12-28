@@ -28,5 +28,6 @@ require 'reality/generators/template_set'
 require 'reality/generators/template_set_container'
 require 'reality/generators/generator'
 require 'reality/generators/standard_template_set'
+require 'reality/generators/standard_artifact_dsl'
 
 require 'reality/generators/buildr_integration'
