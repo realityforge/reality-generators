@@ -106,13 +106,16 @@ module Reality #nodoc
       def facet_directory
         @facet_directory ||= nil
         if @facet_directory.nil?
-          caller_locations.each do |location|
-            if location.absolute_path =~ /.*\/#{self.facet_key}\/model\.rb$/
-              @facet_directory = File.dirname(location.absolute_path)
+          locations = respond_to?(:caller_locations) ?
+            caller_locations.collect { |c| c.absolute_path } :
+            caller.collect { |s| s.split(':')[0] }
+          locations.each do |location|
+            if location =~ /.*\/#{self.facet_key}\/model\.rb$/
+              @facet_directory = File.dirname(location)
               break
             end
           end
-          Reality::Generators.error("Unable to locate facet_directory for facet #{self.facet_key}. Caller trace: #{caller_locations.collect{|c|c.absolute_path}.inspect}") if @facet_directory.nil?
+          Reality::Generators.error("Unable to locate facet_directory for facet #{self.facet_key}. Caller trace: #{locations.inspect}") if @facet_directory.nil?
         end
         @facet_directory
       end
