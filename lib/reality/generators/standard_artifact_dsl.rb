@@ -80,7 +80,7 @@ module Reality #nodoc
 
 
         helpers = template_set_container.derive_default_helpers(options.merge(:file_type => file_extension, :artifact_type => artifact_type, :facet_key => self.facet_key)) +
-                  (options[:helpers].nil? ? [] : options[:helpers])
+          (options[:helpers].nil? ? [] : options[:helpers])
 
         if 'erb' == template_extension
           template_set.erb_template(facets,
