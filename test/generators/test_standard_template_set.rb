@@ -9,8 +9,8 @@ class Reality::Generators::TestStandardTemplateSet < Reality::TestCase
                                                    :iris_entity,
                                                    :description => 'Templates that generate iris entities') do |t|
 
-        t.erb_template([], :component, 'templates/mytemplate.java.erb', 'src/main/#{component.name}')
-        t.ruby_template([], :component, 'templates/rubytemplate.java.rb', 'src/main/#{component.name}2')
+        t.erb_template([], :component, 'jpa/templates/mytemplate.java.erb', 'src/main/#{component.name}')
+        t.ruby_template([], :component, 'jpa/templates/rubytemplate.java.rb', 'src/main/#{component.name}2')
       end
 
 

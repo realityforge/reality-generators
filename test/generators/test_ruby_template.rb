@@ -16,7 +16,7 @@ class Reality::Generators::TestRubyTemplate < Reality::TestCase
     template_set = Reality::Generators::TemplateSet.new(TestTemplateSetContainer, 'foo')
 
     output_filename_pattern = 'main/java/#{component.name}.java'
-    template_filename = File.expand_path(File.dirname(__FILE__) + '/templates/rubytemplate.java.rb')
+    template_filename = File.expand_path(File.dirname(__FILE__) + '/jpa/templates/rubytemplate.java.rb')
     TestTemplateSetContainer.target_manager.target(:component)
 
     template1 = Reality::Generators::RubyTemplate.new(template_set, [], :component, template_filename, output_filename_pattern, [], {})

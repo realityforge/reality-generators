@@ -16,7 +16,7 @@ class Reality::Generators::TestErbTemplate < Reality::TestCase
     template_set = Reality::Generators::TemplateSet.new(TestTemplateSetContainer, 'foo')
 
     output_filename_pattern = 'main/java/#{component.name}.java'
-    template_filename = File.expand_path(File.dirname(__FILE__) + '/templates/mytemplate.java.erb')
+    template_filename = File.expand_path(File.dirname(__FILE__) + '/jpa/templates/mytemplate.java.erb')
     TestTemplateSetContainer.target_manager.target(:component)
 
     template1 = Reality::Generators::ErbTemplate.new(template_set, [], :component, template_filename, output_filename_pattern, [], {})

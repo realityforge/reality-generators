@@ -31,7 +31,7 @@ class Reality::Generators::TestTemplateSet < Reality::TestCase
     template = Reality::Generators::ErbTemplate.new(template_set2,
                                                     [],
                                                     :component,
-                                                    'templates/mytemplate.java.erb',
+                                                    'jpa/templates/mytemplate.java.erb',
                                                     'src/main/#{component.name}',
                                                     [],
                                                     {})
@@ -43,7 +43,7 @@ class Reality::Generators::TestTemplateSet < Reality::TestCase
       Reality::Generators::ErbTemplate.new(template_set2,
                                            [],
                                            :component,
-                                           'templates/mytemplate.java.erb',
+                                           'jpa/templates/mytemplate.java.erb',
                                            'src/main/#{component.name}',
                                            [],
                                            {})
