@@ -16,6 +16,7 @@ module Reality #nodoc
   module Generators #nodoc
     module Rake #nodoc
 
+      # This is the base class used to define tasks that generate artifacts using templates
       class BaseGenerateTask
         attr_accessor :description
         attr_accessor :namespace_key
@@ -134,6 +135,8 @@ module Reality #nodoc
         end
       end
 
+      # Base class that defines tasks to load the resource descriptors into application
+      # This will load the file such as 'architecture.rb', 'noft.rb' or 'resgen.rb'
       class BaseLoadDescriptor
         attr_accessor :description
         attr_accessor :namespace_key
