@@ -16,6 +16,49 @@ module Reality #nodoc
   module Generators #nodoc
     module Rake #nodoc
 
+      # This class is typically mixed into Myproject::Build constants to add simplified mechanisms for defining build tasks
+      module BuildTasksMixin
+        def define_load_task(filename = nil, &block)
+          base_directory = File.dirname(::Buildr.application.buildfile.to_s)
+          candidate_file = File.expand_path("#{base_directory}/#{default_descriptor_filename}")
+          if filename.nil?
+            filename = candidate_file
+          elsif File.expand_path(filename) == candidate_file
+            self.log_container.warn("#{self.name}.define_load_task() passed parameter '#{filename}' which is the same value as the default parameter. This parameter can be removed.")
+          end
+          self.const_get(:LoadDescriptor).new(File.expand_path(filename), &block)
+        end
+
+        def define_generate_task(generator_keys, options = {}, &block)
+          element_key = options[:"#{root_element_type}_key"]
+          target_dir = options[:target_dir]
+          buildr_project = options[:buildr_project]
+
+          if buildr_project.nil? && ::Buildr.application.current_scope.size > 0
+            buildr_project = ::Buildr.project(::Buildr.application.current_scope.join(':')) rescue nil
+          end
+
+          build_key = options[:key] || (buildr_project.nil? ? :default : buildr_project.name.split(':').last)
+
+          if target_dir
+            base_directory = File.dirname(::Buildr.application.buildfile.to_s)
+            target_dir = File.expand_path(target_dir, base_directory)
+          end
+
+          if target_dir.nil? && !buildr_project.nil?
+            target_dir = buildr_project._(:target, :generated, self.generated_type_path_prefix, build_key)
+          elsif !target_dir.nil? && !buildr_project.nil?
+            self.log_container.warn("#{self.name}.define_generate_task specifies a target directory parameter but it can be be derived from the context. The parameter should be removed.")
+          end
+
+          if target_dir.nil?
+            self.log_container.error("#{self.name}.define_generate_task should specify a target directory as it can not be derived from the context.")
+          end
+
+          self.const_get(:GenerateTask).new(element_key, build_key, generator_keys, target_dir, buildr_project, &block)
+        end
+      end
+
       # This is the base class used to define tasks that generate artifacts using templates
       class BaseGenerateTask
         attr_accessor :description
