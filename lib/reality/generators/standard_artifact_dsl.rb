@@ -42,7 +42,7 @@ module Reality #nodoc
         artifact_category = options.delete(:artifact_category) || :main
         Reality::Generators.error("artifact_category '#{artifact_category}' is not a known type") unless [:main, :test].include?(artifact_category)
         filename_pattern = "#{artifact_category}/java/\#{#{self.target_key}.#{self.facet_key}.qualified_#{artifact_key}_name.gsub(\".\",\"/\")}.java"
-        artifact(template_set_suffix, artifact_key, filename_pattern, options)
+        file_artifact(template_set_suffix, artifact_key, filename_pattern, options)
       end
 
       #
@@ -57,46 +57,65 @@ module Reality #nodoc
       # * :helpers - additional helpers that are added to the default helpers.
       # * :guard - The :guard option passed to the template.
       #
-      def artifact(template_set_suffix, artifact_key, filename_pattern, options = {})
+      def file_artifact(template_set_suffix, artifact_key, filename_pattern, options = {})
         Reality::Options.check(options, [:facets, :guard, :helpers], Reality::Generators, 'define artifact')
-
-        facets = [self.facet_key] + (options[:facets].nil? ? [] : options[:facets])
-
-        guard = options[:guard]
-
-        artifact_type = self.target_key
-
-        template_set_key = :"#{self.facet_key}_#{template_set_suffix}"
 
         file_extension = File.extname(filename_pattern)[1...9999]
 
-        template_set = template_set_container.template_set_by_name?(template_set_key) ?
+        params = options.merge(:file_type => file_extension)
+        artifact(template_set_suffix, params) do |template_set, facets, helpers, template_options|
+          base_template_filename = "#{facet_templates_directory}/#{artifact_key}.#{file_extension}"
+          template_extension =
+            File.exist?("#{base_template_filename}.erb") ?
+              'erb' :
+              File.exist?("#{base_template_filename}.rb") ? 'rb' : nil
+          template_filename = "#{base_template_filename}.#{template_extension}"
+          if 'erb' == template_extension
+            template_set.erb_template(facets, self.target_key, template_filename, filename_pattern, helpers, template_options)
+          else
+            template_set.ruby_template(facets, self.target_key, template_filename, filename_pattern, helpers, template_options)
+          end
+        end
+      end
+
+      #
+      # Define an arbitrary artifact and attach it to template_set.
+      # This delegates the work of creating the template to the supplied block which is passed the template pattern.
+      #
+      # The template set is prefixed with the name of the facet from which this is extended if any.
+      #
+      # The following options are supported. Additional options are passed to helper methods and may be used.
+      # * :facets - additional facets that must be enabled for the facet to be generated.
+      # * :helpers - additional helpers that are added to the default helpers.
+      # * :guard - The :guard option passed to the template.
+      #
+      def artifact(template_set_suffix, options = {}, &block)
+        block.call(template_set_with_suffix(template_set_suffix),
+                   template_set_facets(options),
+                   template_set_helpers(options),
+                   :guard => options[:guard])
+      end
+
+      def template_set_facets(options = {})
+        (self.default_facets + (options[:facets].nil? ? [] : options[:facets])).compact
+      end
+
+      def template_set_helpers(options = {})
+        template_set_container.
+          derive_default_helpers(options.merge(:artifact_type => self.target_key, :facet_key => self.facet_key)) +
+          (options[:helpers].nil? ? [] : options[:helpers])
+      end
+
+      def template_set_with_suffix(suffix)
+        template_set_key = [self.facet_key, suffix].compact.join('_').to_sym
+
+        template_set_container.template_set_by_name?(template_set_key) ?
           template_set_container.template_set_by_name(template_set_key) :
           template_set_container.template_set(template_set_key)
+      end
 
-        base_template_filename = "#{facet_templates_directory}/#{artifact_key}.#{file_extension}"
-        template_extension = File.exist?("#{base_template_filename}.erb") ? 'erb' : 'rb'
-        template_filename = "#{base_template_filename}.#{template_extension}"
-
-
-        helpers = template_set_container.derive_default_helpers(options.merge(:file_type => file_extension, :artifact_type => artifact_type, :facet_key => self.facet_key)) +
-          (options[:helpers].nil? ? [] : options[:helpers])
-
-        if 'erb' == template_extension
-          template_set.erb_template(facets,
-                                    artifact_type,
-                                    template_filename,
-                                    filename_pattern,
-                                    helpers,
-                                    :guard => guard)
-        else
-          template_set.ruby_template(facets,
-                                     artifact_type,
-                                     template_filename,
-                                     filename_pattern,
-                                     helpers,
-                                     :guard => guard)
-        end
+      def default_facets
+        [self.facet_key]
       end
 
       def facet_templates_directory
@@ -110,7 +129,7 @@ module Reality #nodoc
             caller_locations.collect { |c| c.absolute_path } :
             caller.collect { |s| s.split(':')[0] }
           locations.each do |location|
-            if location =~ /.*\/#{self.facet_key}\/model\.rb$/
+            if !self.facet_key.nil? && location =~ /.*\/#{self.facet_key}\/model\.rb$/
               @facet_directory = File.dirname(location)
               break
             end
