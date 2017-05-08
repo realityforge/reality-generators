@@ -115,7 +115,7 @@ module Reality #nodoc
               break
             end
           end
-          Reality::Generators.error("Unable to locate facet_directory for facet #{self.facet_key}. Caller trace: #{locations.inspect}") if @facet_directory.nil?
+          Reality::Generators.error("Unable to locate facet_directory for facet '#{self.facet_key}'. Caller trace: #{locations.inspect}") if @facet_directory.nil?
         end
         @facet_directory
       end
