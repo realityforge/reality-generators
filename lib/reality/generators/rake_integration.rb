@@ -79,7 +79,6 @@ module Reality #nodoc
           @generator_keys = generator_keys
           @namespace_key = self.default_namespace_key
           @filter = nil
-          @template_map = {}
           # Turn on verbose messages if buildr is turned on tracing
           @verbose = trace?
           @target_dir = target_dir
