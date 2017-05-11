@@ -37,6 +37,7 @@ module Reality #nodoc
       # traverses all elements that are contained transitively by the root element.
       # The templates then generate files from traversed elements.
       def generate(element_type, element, directory, templates, filter)
+        templates = load_templates_from_template_sets(templates) if templates.any? {|t| t.is_a?(Symbol)}
         unprocessed_files = (Dir["#{directory}/**/*.*"] + Dir["#{directory}/**/*"]).uniq
 
         Generators.debug "Templates to process: #{templates.collect { |t| t.name }.inspect}"
