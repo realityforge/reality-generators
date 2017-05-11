@@ -84,7 +84,7 @@ module Reality #nodoc
           @target_dir = target_dir
           yield self if block_given?
           define
-          @templates = self.generator_container.generator.load_templates_from_template_sets(generator_keys)
+          @templates = self.template_set_container.generator.load_templates_from_template_sets(generator_keys)
           Reality::Generators::Buildr.configure_buildr_project(buildr_project, task_name, @templates, target_dir)
         end
 
@@ -94,8 +94,8 @@ module Reality #nodoc
           Generators.error('default_namespace_key should be implemented')
         end
 
-        def generator_container
-          Generators.error('generator_container should be implemented')
+        def template_set_container
+          Generators.error('template_set_container should be implemented')
         end
 
         def root_element_type
@@ -159,7 +159,7 @@ module Reality #nodoc
                                             Reality::Generators::Logger,
                                             Reality::Facets::Logger) do
                   self.log_container.info "Generator started: Generating #{self.generator_keys.inspect}"
-                  self.generator_container.generator.
+                  self.template_set_container.generator.
                     generate(self.root_element_type, self.root_element, self.target_dir, @templates, self.filter)
                 end
               rescue Reality::Generators::GeneratorError => e
