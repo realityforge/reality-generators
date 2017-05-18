@@ -40,6 +40,8 @@ module Reality #nodoc
         templates = load_templates_from_template_sets(templates) if templates.any? {|t| t.is_a?(Symbol) || t.is_a?(String)}
         unprocessed_files = (Dir["#{directory}/**/*.*"] + Dir["#{directory}/**/*"]).uniq
 
+        element.pre_generate if element.respond_to?(:pre_generate)
+
         Generators.debug "Templates to process: #{templates.collect { |t| t.name }.inspect}"
 
         targets = {}

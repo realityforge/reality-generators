@@ -239,6 +239,45 @@ class Reality::Generators::TestGenerator < Reality::TestCase
     assert_equal false, File.exist?("#{target_directory}/main/java/MyRepo/MyEntityB/MyAttr4.java")
   end
 
+  class Repository2 < Reality.base_element(:name => true)
+      def pre_generate
+        @pre_generate_called = true
+      end
+
+      def pre_generate_called?
+        @pre_generate_called ||= false
+      end
+  end
+
+  class Repository2Template < Reality::Generators::SingleFileOutputTemplate
+    def render_to_string(context_binding)
+      eval('"Repository: #{repository2.name}"', context_binding)
+    end
+  end
+
+  def test_generate_with_pre_generate_hook
+    repository = Repository2.new(:MyRepo)
+
+    TestTemplateSetContainer.target_manager.target(:repository2)
+
+    template_set = TestTemplateSetContainer.template_set(:test) do |t|
+      Repository2Template.new(t, [], :repository2, 'repository.java', 'main/java/#{repository2.name}.java')
+    end
+
+    target_directory = "#{temp_dir}/generated/erb_template"
+
+    # Call toString on template name to ensure it is possible to pass string in
+    TestTemplateSetContainer.generator.
+      generate(:repository2, repository, target_directory, [template_set.name.to_s], nil)
+
+    repo_file = "#{target_directory}/main/java/MyRepo.java"
+
+    assert_equal true, repository.pre_generate_called?
+    assert_equal true, File.directory?("#{target_directory}/main/java")
+    assert_equal true, File.exist?(repo_file)
+    assert_equal 'Repository: MyRepo', IO.read(repo_file)
+  end
+
   def test_load_templates_from_template_sets
 
     TestTemplateSetContainer.target_manager.target(:repository)
