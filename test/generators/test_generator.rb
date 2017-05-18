@@ -268,7 +268,7 @@ class Reality::Generators::TestGenerator < Reality::TestCase
       AttributeTemplate.new(template_set, [], :attribute, 'attribute4.java', 'main/java/#{attribute.qualified_name.gsub(".","/")}4.java')
     end
 
-    template_set_keys = [:template_set_1, :template_set_4]
+    template_set_keys = [:template_set_1, 'template_set_4']
     templates = TestTemplateSetContainer.generator.load_templates_from_template_sets(template_set_keys)
 
     assert_equal 6, templates.size
