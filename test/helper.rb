@@ -36,9 +36,13 @@ class Reality::TestCase < Minitest::Test
   end
 
   def teardown
-    unless @temp_dir.nil?
-      FileUtils.rm_rf @temp_dir unless ENV['NO_DELETE_DIR'] == 'true'
-      @temp_dir = nil
+    if passed?
+      unless @temp_dir.nil?
+        FileUtils.rm_rf @temp_dir unless ENV['NO_DELETE_DIR'] == 'true'
+        @temp_dir = nil
+      end
+    else
+      $stderr.puts "Test #{self.class.name}.#{name} Failed. Leaving working directory #{@temp_dir}"
     end
   end
 
