@@ -17,6 +17,13 @@ module Reality #nodoc
     # A base class for writing command line tasks that load one or more
     # descriptors and run zer or more generators/template_sets
     class BaseRunner
+      EXIT_CODE_SUCCESS = 0
+      EXIT_CODE_UNABLE_TO_PARSE_ARGS = 50
+      EXIT_CODE_UNEXPECTED_ARGS = 51
+      EXIT_CODE_DESCRIPTOR_NO_EXIST = 52
+      EXIT_CODE_NO_ELEMENT_NAME_SPECIFIED = 53
+      EXIT_CODE_ELEMENT_NAME_NO_EXIST = 54
+
       def initialize
         @descriptors = []
         @generators = self.default_generators
@@ -127,7 +134,7 @@ module Reality #nodoc
 
           opt.on('-h', '--help', 'help') do
             puts opt_parser
-            exit(0)
+            exit(EXIT_CODE_SUCCESS)
           end
         end
 
@@ -136,13 +143,13 @@ module Reality #nodoc
           opt_parser.parse!(args)
         rescue => e
           puts "Error: #{e.message}"
-          exit(53)
+          exit(EXIT_CODE_UNABLE_TO_PARSE_ARGS)
         end
 
         if args.length != 0
           puts "Unexpected arguments #{args.inspect} passed to command"
           puts opt_parser
-          exit(31)
+          exit(EXIT_CODE_UNEXPECTED_ARGS)
         end
 
         loggers = [self.log_container.const_get(:Logger), Reality::Generators::Logger] + self.additional_loggers
@@ -177,7 +184,7 @@ module Reality #nodoc
           filename = File.expand_path(descriptor)
           unless File.exist?(filename)
             puts "Descriptor file #{filename} does not exist"
-            exit(43)
+            exit(EXIT_CODE_DESCRIPTOR_NO_EXIST)
           end
           load_descriptor(filename)
           puts "Descriptor loaded: #{descriptor}" if verbose?
@@ -190,13 +197,13 @@ module Reality #nodoc
             puts "Derived default #{Reality::Naming.humanize(self.element_type_name)} name: #{self.element_name}" if verbose?
           else
             puts "No #{Reality::Naming.humanize(self.element_type_name).downcase} name specified and #{Reality::Naming.humanize(element_type_name).downcase} name could not be determined. Please specify one of the valid #{Reality::Naming.humanize(self.element_type_name).downcase} names: #{element_names.join(', ')}"
-            exit(36)
+            exit(EXIT_CODE_NO_ELEMENT_NAME_SPECIFIED)
           end
         end
 
         unless self.instance_container.send(:"#{self.element_type_name}_by_name?", self.element_name)
           puts "Specified #{Reality::Naming.humanize(self.element_type_name).downcase} name '#{self.element_name}' does not exist in descriptors."
-          exit(36)
+          exit(EXIT_CODE_ELEMENT_NAME_NO_EXIST)
         end
 
         element = self.instance_container.send(:"#{self.element_type_name}_by_name", self.element_name)
@@ -207,7 +214,7 @@ module Reality #nodoc
                                                        self.generators,
                                                        nil)
 
-        exit 0
+        exit EXIT_CODE_SUCCESS
       end
 
       def load_descriptor(filename)
