@@ -30,5 +30,6 @@ require 'reality/generators/generator'
 require 'reality/generators/standard_template_set'
 require 'reality/generators/standard_artifact_dsl'
 require 'reality/generators/rake_integration'
+require 'reality/generators/runner'
 
 require 'reality/generators/buildr_integration'
