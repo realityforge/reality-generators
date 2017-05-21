@@ -107,6 +107,89 @@ Generating test2:repository_t2.java for repository MyRepo
 Generated test2:repository_t2.java for repository MyRepo to #{target_file2}
 Generator completed
 OUTPUT
+    assert_equal expected.to_s, output.to_s
+
+    FileUtils.rm_rf target_directory
+    output2 = run_runner((%W(--descriptor #{descriptor} --descriptor #{descriptor2} --generators test --generators test2 --target-dir #{target_directory} --debug)))
+    assert_equal expected, output2
+  end
+
+  def test_multiple_repositories_without_explicit_repository
+    descriptor = "#{temp_dir}/repository.rb"
+    File.write(descriptor, 'GenTest.repository(:MyRepo)')
+    descriptor2 = "#{temp_dir}/repository2.rb"
+    File.write(descriptor2, 'GenTest.repository(:MyRepo2)')
+
+    target_directory = "#{temp_dir}/generated/erb_template"
+
+    output = run_runner(%W(--descriptor #{descriptor} --descriptor #{descriptor2} --target-dir #{target_directory}),
+                        Reality::Generators::BaseRunner::EXIT_CODE_NO_ELEMENT_NAME_SPECIFIED)
+
+    expected = "No repository name specified and repository name could not be determined. Please specify one of the valid repository names: MyRepo, MyRepo2\n"
+    assert_equal expected, output
+  end
+
+  def test_multiple_repositories_with_explicit_repository
+    descriptor = "#{temp_dir}/repository.rb"
+    File.write(descriptor, 'GenTest.repository(:MyRepo)')
+    descriptor2 = "#{temp_dir}/repository2.rb"
+    File.write(descriptor2, 'GenTest.repository(:MyRepo2)')
+
+    target_directory = "#{temp_dir}/generated/erb_template"
+
+    output = run_runner(%W(--descriptor #{descriptor} --descriptor #{descriptor2} --target-dir #{target_directory} --repository MyRepo))
+
+    assert_equal '', output
+  end
+
+  def test_element_name_specified_but_no_exist
+    descriptor = "#{temp_dir}/repository.rb"
+    File.write(descriptor, 'GenTest.repository(:MyRepo)')
+
+    target_directory = "#{temp_dir}/generated/erb_template"
+
+    output = run_runner(%W(--descriptor #{descriptor} --target-dir #{target_directory} --repository SomeOtherMyRepo),
+                        Reality::Generators::BaseRunner::EXIT_CODE_ELEMENT_NAME_NO_EXIST)
+
+    expected = "Specified repository name 'SomeOtherMyRepo' does not exist in descriptors.\n"
+    assert_equal expected, output
+  end
+
+  def test_descriptor_no_exist
+    descriptor = "#{temp_dir}/repository.rb"
+
+    target_directory = "#{temp_dir}/generated/erb_template"
+
+    output = run_runner(%W(--descriptor #{descriptor} --target-dir #{target_directory}),
+                        Reality::Generators::BaseRunner::EXIT_CODE_DESCRIPTOR_NO_EXIST)
+
+    expected = "Descriptor file #{descriptor} does not exist\n"
+    assert_equal expected, output
+  end
+
+  def test_invalid_args
+    output = run_runner(%W(--bad-arg), Reality::Generators::BaseRunner::EXIT_CODE_UNABLE_TO_PARSE_ARGS)
+
+    expected = "Error: invalid option: --bad-arg\n"
+    assert_equal expected, output
+  end
+
+  def test_unexpected_arg
+    output = run_runner(%W(bad-arg), Reality::Generators::BaseRunner::EXIT_CODE_UNEXPECTED_ARGS)
+
+    expected = <<OUTPUT
+Unexpected arguments ["bad-arg"] passed to command
+Usage: gentest.rb [OPTIONS]
+
+Options
+    -d, --descriptor FILENAME        the filename of a descriptor to be loaded. Multiple descriptors may be loaded. Defaults to 'resources.rb' if none specified.
+    -r, --repository NAME            the name of the repository to load. Defaults to the the name of the only repository if there is only one repository defined by the descriptors, otherwise must be specified.
+    -g, --generators GENERATORS      the comma separated list of generators to run. Defaults to []
+    -t, --target-dir DIR             the directory into which to generate artifacts. Defaults to 'generated'.
+    -v, --verbose                    turn on verbose logging.
+        --debug                      turn on debug logging.
+    -h, --help                       help
+OUTPUT
     assert_equal expected, output
   end
 
