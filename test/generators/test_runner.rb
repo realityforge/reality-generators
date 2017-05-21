@@ -131,10 +131,10 @@ OUTPUT
     run_runner((%W(--descriptor #{descriptor} --generators #{generators.join(',')} --target-dir #{target_directory} #{additional_args})))
   end
 
-  def run_runner(args)
+  def run_runner(args, expected_exitcode = Reality::Generators::BaseRunner::EXIT_CODE_SUCCESS)
     prefix = (defined?(JRUBY_VERSION) || Gem.win_platform?) ? 'ruby ' : ''
     command = File.expand_path("#{File.dirname(__FILE__)}/gentest.rb")
-    run_command("#{prefix}#{command} #{args.join(' ')}")
+    run_command("#{prefix}#{command} #{args.join(' ')}", expected_exitcode)
   end
 
   def run_command(command, expected_exitcode = 0)
