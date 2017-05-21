@@ -7,9 +7,8 @@ class Reality::Generators::TestRunner < Reality::TestCase
     File.write(descriptor, 'GenTest.repository(:MyRepo)')
 
     target_directory = "#{temp_dir}/generated/erb_template"
-    generators = %w(test)
 
-    output = run_gentest(descriptor, generators, target_directory)
+    output = run_runner((%W(--descriptor #{descriptor} --generators test --target-dir #{target_directory})))
 
     repo_file = "#{target_directory}/main/java/MyRepo.java"
     assert_equal true, File.directory?("#{target_directory}/main/java")
@@ -23,9 +22,8 @@ class Reality::Generators::TestRunner < Reality::TestCase
     File.write(descriptor, 'GenTest.repository(:MyRepo)')
 
     target_directory = "#{temp_dir}/generated/erb_template"
-    generators = %w(test)
 
-    output = run_gentest(descriptor, generators, target_directory, '--verbose')
+    output = run_runner((%W(--descriptor #{descriptor} --generators test --target-dir #{target_directory} --verbose)))
 
     target_file = "#{target_directory}/main/java/MyRepo.java"
     assert_equal 'Repository: MyRepo', IO.read(target_file)
@@ -35,7 +33,7 @@ Repository Name: Unspecified
 Target Dir: #{target_directory}
 Descriptor: #{descriptor}
 Generators:
-	 * test
+  * test
 Loading descriptor: #{descriptor}
 Descriptor loaded: #{descriptor}
 Derived default Repository name: MyRepo
@@ -48,9 +46,8 @@ OUTPUT
     File.write(descriptor, 'GenTest.repository(:MyRepo)')
 
     target_directory = "#{temp_dir}/generated/erb_template"
-    generators = %w(test)
 
-    output = run_gentest(descriptor, generators, target_directory, '--debug')
+    output = run_runner((%W(--descriptor #{descriptor} --generators test --target-dir #{target_directory} --debug)))
 
     target_file = "#{target_directory}/main/java/MyRepo.java"
     assert_equal 'Repository: MyRepo', IO.read(target_file)
@@ -60,7 +57,7 @@ Repository Name: Unspecified
 Target Dir: #{target_directory}
 Descriptor: #{descriptor}
 Generators:
-	 * test
+  * test
 Loading descriptor: #{descriptor}
 Descriptor loaded: #{descriptor}
 Derived default Repository name: MyRepo
@@ -79,9 +76,8 @@ OUTPUT
     File.write(descriptor2, '')
 
     target_directory = "#{temp_dir}/generated/erb_template"
-    generators = %w(test test2)
 
-    output = run_gentest(descriptor, generators, target_directory, "--descriptor #{descriptor2} --debug")
+    output = run_runner((%W(--descriptor #{descriptor} --descriptor #{descriptor2} --generators test,test2 --target-dir #{target_directory} --debug)))
 
     target_file = "#{target_directory}/main/java/MyRepo.java"
     target_file2 = "#{target_directory}/main/java/MyRepoTemplate2.java"
