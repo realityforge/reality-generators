@@ -156,4 +156,44 @@ class Reality::Generators::TestTemplate < Reality::TestCase
 
     assert_equal 'X', IO.read(target_filename)
   end
+
+  class DirTemplate < Reality::Generators::SingleDirectoryOutputTemplate
+    def generate_to_directory!(output_directory, element)
+      FileUtils.rm_rf output_directory
+      FileUtils.mkdir_p output_directory
+      File.write("#{output_directory}/foo.txt",'X')
+    end
+  end
+
+  def test_single_directory_template
+    template_set = Reality::Generators::TemplateSet.new(TestTemplateSetContainer, 'foo')
+
+    output_directory_pattern = 'assets/#{component.name}'
+    template_key = 'MyFiles/templates/noft'
+    TestTemplateSetContainer.target_manager.target(:component)
+
+    template1 = DirTemplate.new(template_set, [], :component, template_key, output_directory_pattern, [], {})
+
+    assert_equal output_directory_pattern, template1.output_directory_pattern
+    assert_equal output_directory_pattern, template1.output_path
+    assert_equal template_set, template1.template_set
+    assert_equal [], template1.facets
+    assert_equal :component, template1.target
+    assert_equal [], template1.helpers
+    assert_equal template_key, template1.template_key
+    assert_equal nil, template1.guard
+    assert_equal({}, template1.extra_data)
+    assert_equal 'foo:MyFiles/templates/noft', template1.name
+
+    target_basedir = "#{temp_dir}/generated/single_dir_template"
+    target_filename = "#{target_basedir}/assets/SimpleModel/foo.txt"
+    other_filename = "#{target_basedir}/main/java/Other.java"
+    unprocessed_files = %W(#{target_filename} #{other_filename})
+    assert_equal false, File.exist?(target_filename)
+    template1.generate(target_basedir, SimpleModel.new, unprocessed_files)
+    assert_equal true, File.exist?(target_filename)
+    assert_equal 1, unprocessed_files.size
+
+    assert_equal 'X', IO.read(target_filename)
+  end
 end
