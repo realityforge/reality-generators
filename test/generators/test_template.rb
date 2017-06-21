@@ -185,7 +185,7 @@ class Reality::Generators::TestTemplate < Reality::TestCase
     assert_equal({}, template1.extra_data)
     assert_equal 'foo:MyFiles/templates/noft', template1.name
 
-    target_basedir = "#{temp_dir}/generated/single_dir_template"
+    target_basedir = "#{temp_dir}/generated/single_dir_template/"
     target_filename = "#{target_basedir}/assets/SimpleModel/foo.txt"
     other_filename = "#{target_basedir}/main/java/Other.java"
     unprocessed_files = %W(#{target_filename} #{other_filename})

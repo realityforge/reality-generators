@@ -171,9 +171,12 @@ module Reality #nodoc
         begin
           output_directory = eval("\"#{self.output_directory_pattern}\"", context_binding, "#{self.template_key}#Filename")
           output_directory = File.join(target_basedir, output_directory)
-          unprocessed_files.delete_if { |f| f =~ /^#{output_directory}\/.*/ }
 
           FileUtils.mkdir_p File.dirname(output_directory) unless File.directory?(File.dirname(output_directory))
+
+          output_directory = File.expand_path(output_directory)
+          unprocessed_files.delete_if { |f| File.expand_path(f) =~ /^#{Regexp.escape(output_directory)}\/.*/ }
+
           generated = generate_to_directory!(output_directory, element)
 
           if generated
