@@ -57,7 +57,7 @@ module Reality #nodoc
       end
 
       def template_map
-        @templates ||= Reality::OrderedHash.new
+        @templates ||= {}
       end
     end
   end

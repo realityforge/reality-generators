@@ -79,7 +79,7 @@ module Reality #nodoc
       private
 
       def template_set_map
-        @template_sets ||= Reality::OrderedHash.new
+        @template_sets ||= {}
       end
     end
   end
