@@ -36,7 +36,7 @@ module Reality #nodoc
       # The traversal starts from a root element of specified element_type and
       # traverses all elements that are contained transitively by the root element.
       # The templates then generate files from traversed elements.
-      def generate(element_type, element, directory, templates, filter)
+      def generate(element_type, element, directory, templates, filter, keep_filter = nil)
         templates = load_templates_from_template_sets(templates) if templates.any? {|t| t.is_a?(Symbol) || t.is_a?(String)}
         unprocessed_files = (Dir["#{directory}/**/*.*"] + Dir["#{directory}/**/*"]).uniq
 
@@ -66,8 +66,12 @@ module Reality #nodoc
               FileUtils.rmdir file
             end
           else
-            Generators.debug "Removing #{file} as no longer generated"
-            FileUtils.rm_f file
+            if keep_filter && keep_filter.call(file)
+              Generators.debug "Keeping #{file} that is not generated as it matches the keep filter"
+            else
+              Generators.debug "Removing #{file} as no longer generated"
+              FileUtils.rm_f file
+            end
           end
         end
 
