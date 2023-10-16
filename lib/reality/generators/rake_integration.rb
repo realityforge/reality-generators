@@ -74,6 +74,7 @@ module Reality #nodoc
         attr_accessor :namespace_key
         attr_accessor :filter
         attr_writer :verbose
+        attr_writer :mark_as_generated_in_ide
 
         attr_reader :root_element_key
         attr_reader :key
@@ -90,11 +91,12 @@ module Reality #nodoc
           @filter = nil
           # Turn on verbose messages if buildr is turned on tracing
           @verbose = trace?
+          @mark_as_generated_in_ide = true
           @target_dir = target_dir
           yield self if block_given?
           define
           @templates = self.template_set_container.generator.load_templates_from_template_sets(generator_keys)
-          Reality::Generators::Buildr.configure_buildr_project(buildr_project, task_name, @templates, target_dir)
+          Reality::Generators::Buildr.configure_buildr_project(buildr_project, task_name, @templates, target_dir, mark_as_generated_in_ide?)
         end
 
         protected
@@ -148,6 +150,10 @@ module Reality #nodoc
         end
 
         private
+
+        def mark_as_generated_in_ide?
+          !!@mark_as_generated_in_ide
+        end
 
         def verbose?
           !!@verbose

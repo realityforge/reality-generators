@@ -19,7 +19,7 @@ module Reality #nodoc
         # This method is called from a Rake or Buildr task to configure the Buildr
         # project so that it knows the location of all the generated artifacts and
         # adds them to the appropriate compile paths etc.
-        def configure_buildr_project(buildr_project, generator_task, templates, target_dir)
+        def configure_buildr_project(buildr_project, generator_task, templates, target_dir, mark_as_generated_in_ide)
           if buildr_project.nil?
             task('clean') do
               rm_rf target_dir
@@ -37,7 +37,7 @@ module Reality #nodoc
               buildr_project.compile.using :javac
               buildr_project.compile.from main_java_dir
               # Need to force this as it may have already been cached and thus will not recalculate
-              buildr_project.iml.main_generated_source_directories << main_java_dir if buildr_project.iml?
+              buildr_project.iml.main_generated_source_directories << main_java_dir if mark_as_generated_in_ide && buildr_project.iml?
             end
 
             # Is there resources generated in project?
@@ -56,7 +56,7 @@ module Reality #nodoc
                   end
                 end
               end
-              buildr_project.iml.main_generated_resource_directories << main_resources_dir if buildr_project.iml?
+              buildr_project.iml.main_generated_resource_directories << main_resources_dir if mark_as_generated_in_ide && buildr_project.iml?
             end
 
             # Is there assets generated in project?
@@ -76,7 +76,7 @@ module Reality #nodoc
               end
               buildr_project.test.compile.from test_java_dir
               # Need to force this as it may have already been cached and thus will not recalculate
-              buildr_project.iml.test_generated_source_directories << test_java_dir if buildr_project.iml?
+              buildr_project.iml.test_generated_source_directories << test_java_dir if mark_as_generated_in_ide && buildr_project.iml?
             end
 
             # Is there resources generated in project?
@@ -95,7 +95,7 @@ module Reality #nodoc
                   end
                 end
               end
-              buildr_project.iml.test_generated_resource_directories << test_resources_dir if buildr_project.iml?
+              buildr_project.iml.test_generated_resource_directories << test_resources_dir if mark_as_generated_in_ide && buildr_project.iml?
             end
           end
         end
