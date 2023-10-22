@@ -111,10 +111,12 @@ module Reality #nodoc
     # Base class for templates that generate a single file
     class SingleFileOutputTemplate < Template
       attr_reader :output_filename_pattern
+      attr_reader :output_filter
 
       def initialize(template_set, facets, target, template_key, output_filename_pattern, helpers = [], options = {})
         super(template_set, facets, target, template_key, helpers, options)
         @output_filename_pattern = output_filename_pattern
+        @output_filter = options[:output_filter]
       end
 
       def output_path
@@ -132,6 +134,7 @@ module Reality #nodoc
           output_filename = File.join(target_basedir, output_filename)
           unprocessed_files.delete(output_filename)
           result = self.render_to_string(context_binding)
+          result = self.output_filter.call(result) unless self.output_filter.nil?
           FileUtils.mkdir_p File.dirname(output_filename) unless File.directory?(File.dirname(output_filename))
           if File.exist?(output_filename) && IO.read(output_filename) == result
             Generators.debug "Skipped generation of #{self.name} for #{self.target} #{object_name} to #{output_filename} due to no changes"
