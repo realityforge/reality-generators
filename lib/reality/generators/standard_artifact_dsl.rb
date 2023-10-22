@@ -58,7 +58,7 @@ module Reality #nodoc
       # * :guard - The :guard option passed to the template.
       #
       def file_artifact(template_set_suffix, artifact_key, filename_pattern, options = {})
-        Reality::Options.check(options, [:facets, :guard, :helpers], Reality::Generators, 'define artifact')
+        Reality::Options.check(options, [:output_filter, :facets, :guard, :helpers], Reality::Generators, 'define artifact')
 
         file_extension = File.extname(filename_pattern)[1...9999]
 
