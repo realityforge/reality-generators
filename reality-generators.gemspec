@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
 
   s.rdoc_options       = %w(--line-numbers --inline-source --title reality-generators)
 
-  s.add_dependency 'reality-core', '>= 1.7.0'
+  s.add_dependency 'reality-core', '>= 1.8.0'
   s.add_dependency 'reality-naming', '>= 1.13.0'
 
   s.add_development_dependency(%q<minitest>, ['= 5.9.1'])
