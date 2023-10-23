@@ -19,13 +19,17 @@ module Reality #nodoc
         # This method is called from a Rake or Buildr task to configure the Buildr
         # project so that it knows the location of all the generated artifacts and
         # adds them to the appropriate compile paths etc.
-        def configure_buildr_project(buildr_project, generator_task, templates, target_dir, mark_as_generated_in_ide)
+        def configure_buildr_project(buildr_project, generator_task, templates, target_dir, mark_as_generated_in_ide, clean_files = true)
           if buildr_project.nil?
-            task('clean') do
-              rm_rf target_dir
+            if clean_files
+              task('clean') do
+                rm_rf target_dir
+              end
             end
           else
-            buildr_project.clean { rm_rf target_dir }
+            if clean_files
+              buildr_project.clean { rm_rf target_dir }
+            end
             file(File.expand_path(target_dir) => [generator_task])
 
             # Is there java source generated in project?

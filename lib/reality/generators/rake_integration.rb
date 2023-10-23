@@ -64,7 +64,7 @@ module Reality #nodoc
             buildr_project.clean { rm_rf target_dir }
           end
 
-          self.const_get(:GenerateTask).new(element_key, build_key, generator_keys, target_dir, buildr_project, &block)
+          self.const_get(:GenerateTask).new(element_key, build_key, generator_keys, target_dir, buildr_project, clean_generated_files, &block)
         end
       end
 
@@ -83,7 +83,7 @@ module Reality #nodoc
 
         attr_reader :task_name
 
-        def initialize(root_element_key, key, generator_keys, target_dir, buildr_project = nil)
+        def initialize(root_element_key, key, generator_keys, target_dir, buildr_project = nil, clean_generated_files = true)
           @root_element_key = root_element_key
           @key = key
           @generator_keys = generator_keys
@@ -92,11 +92,12 @@ module Reality #nodoc
           # Turn on verbose messages if buildr is turned on tracing
           @verbose = trace?
           @mark_as_generated_in_ide = true
+          @clean_generated_files = clean_generated_files
           @target_dir = target_dir
           yield self if block_given?
           define
           @templates = self.template_set_container.generator.load_templates_from_template_sets(generator_keys)
-          Reality::Generators::Buildr.configure_buildr_project(buildr_project, task_name, @templates, target_dir, mark_as_generated_in_ide?)
+          Reality::Generators::Buildr.configure_buildr_project(buildr_project, task_name, @templates, target_dir, mark_as_generated_in_ide?, clean_generated_files?)
         end
 
         protected
@@ -153,6 +154,10 @@ module Reality #nodoc
 
         def mark_as_generated_in_ide?
           !!@mark_as_generated_in_ide
+        end
+
+        def clean_generated_files?
+          !!@clean_generated_files
         end
 
         def verbose?
