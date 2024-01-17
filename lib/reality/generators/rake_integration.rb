@@ -49,6 +49,8 @@ module Reality #nodoc
           if target_dir.nil? && !buildr_project.nil?
             if clean_generated_files
               target_dir = buildr_project._(:target, :generated, self.generated_type_path_prefix, build_key)
+            elsif buildr_project.inline_generated_source?
+              target_dir = buildr_project._('src')
             else
               target_dir = buildr_project._(:srcgen, self.generated_type_path_prefix, build_key)
             end
