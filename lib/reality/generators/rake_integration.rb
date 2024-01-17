@@ -34,6 +34,8 @@ module Reality #nodoc
           target_dir = options[:target_dir]
           buildr_project = options[:buildr_project]
           clean_generated_files = options[:clean_generated_files].nil? ? true : !!options[:clean_generated_files]
+          keep_file_patterns = options[:keep_file_patterns] || []
+          keep_file_names = options[:keep_file_names] || []
 
           if buildr_project.nil? && ::Buildr.application.current_scope.size > 0
             buildr_project = ::Buildr.project(::Buildr.application.current_scope.join(':')) rescue nil
@@ -66,7 +68,19 @@ module Reality #nodoc
             buildr_project.clean { rm_rf target_dir }
           end
 
-          self.const_get(:GenerateTask).new(element_key, build_key, generator_keys, target_dir, buildr_project, clean_generated_files, &block)
+          self.const_get(:GenerateTask).new(element_key, build_key, generator_keys, target_dir, buildr_project, clean_generated_files) do |g|
+            g.keep_filter = Proc.new do |file|
+              filename = file.to_s
+              result = keep_file_names.include?(filename)
+              keep_file_patterns.each do |keep_file_pattern|
+                result = true if keep_file_pattern =~ filename
+              end
+              result
+            end if !keep_file_patterns.empty? || !keep_file_names.empty?
+            block.call(g)
+          end
+
+          target_dir
         end
       end
 
@@ -75,6 +89,7 @@ module Reality #nodoc
         attr_accessor :description
         attr_accessor :namespace_key
         attr_accessor :filter
+        attr_accessor :keep_filter
         attr_writer :verbose
         attr_writer :mark_as_generated_in_ide
 
@@ -91,6 +106,7 @@ module Reality #nodoc
           @generator_keys = generator_keys
           @namespace_key = self.default_namespace_key
           @filter = nil
+          @keep_filter = nil
           # Turn on verbose messages if buildr is turned on tracing
           @verbose = trace?
           @mark_as_generated_in_ide = true
@@ -182,7 +198,7 @@ module Reality #nodoc
                                             Reality::Facets::Logger) do
                   self.log_container.info "Generator started: Generating #{self.generator_keys.inspect}"
                   self.template_set_container.generator.
-                    generate(self.root_element_type, self.root_element, self.target_dir, @templates, self.filter)
+                    generate(self.root_element_type, self.root_element, self.target_dir, @templates, self.filter, self.keep_filter)
                 end
               rescue Reality::Generators::GeneratorError => e
                 puts e.message
