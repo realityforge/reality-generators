@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name               = %q{reality-generators}
-  s.version            = '1.22.0'
+  s.version            = '1.23.0'
   s.platform           = Gem::Platform::RUBY
 
   s.authors            = ['Peter Donald']
